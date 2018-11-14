@@ -2,6 +2,8 @@ package com.example.oscar.facebook
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,7 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 
 
+
 class MainActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +39,12 @@ class MainActivity : AppCompatActivity() {
         adapter.add(UserItem())
         adapter.add(UserItem())
 
+
+
+
+
     }
+
     class UserItem: Item<ViewHolder>(){
         override fun getLayout(): Int {
             return R.layout.custom_post_row
