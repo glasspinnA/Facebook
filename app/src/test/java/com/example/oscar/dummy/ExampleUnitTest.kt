@@ -1,4 +1,4 @@
-package com.example.oscar.facebook
+package com.example.oscar.dummy
 
 import org.junit.Test
 

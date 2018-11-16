@@ -1,7 +1,7 @@
-package com.example.oscar.facebook
+package com.example.oscar.dummy
 
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import android.support.test.InstrumentationRegistry
+import android.support.test.runner.AndroidJUnit4
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.example.oscar.facebook", appContext.packageName)
+        assertEquals("com.example.oscar.dummy", appContext.packageName)
     }
 }

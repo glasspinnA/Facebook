@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/miCompose"
+            android:icon="@android:drawable/alert_dark_frame"
+            app:showAsAction="ifRoom"
+            android:title="Compose">
+    </item>
+    <item
+            android:id="@+id/miProfile"
+            android:icon="@android:drawable/ic_secure"
+            app:showAsAction="ifRoom|withText"
+            android:title="Profile">
+    </item>
+</menu>
