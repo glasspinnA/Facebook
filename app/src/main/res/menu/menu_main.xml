@@ -7,6 +7,7 @@
             android:title="Compose">
     </item>
     <item
+
             android:id="@+id/miProfile"
             android:icon="@android:drawable/ic_secure"
             app:showAsAction="ifRoom|withText"
