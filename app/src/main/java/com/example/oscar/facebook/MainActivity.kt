@@ -1,17 +1,18 @@
-package com.example.oscar.dummy
+package com.example.oscar.facebook
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.R.menu
 import android.view.Menu
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.design.widget.TabLayout
+import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import com.example.oscar.dummy.R
 import com.xwray.groupie.Section
 
 
@@ -21,10 +22,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Find the toolbar view inside the activity layout
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
-        // Make sure the toolbar exists in the activity and is not null
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         val adapter = GroupAdapter<ViewHolder>()
@@ -42,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         val viewPager = findViewById<View>(R.id.viewpager) as ViewPager
-        viewPager.adapter = SampleFragmentPagerAdapter(
+        viewPager.adapter = PageAdapter(
             supportFragmentManager,
             this@MainActivity
         )
@@ -73,6 +71,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        return true
     }
 }
