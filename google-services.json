@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "834319233587",
+    "firebase_url": "https://facebook-clone-kotlin.firebaseio.com",
+    "project_id": "facebook-clone-kotlin",
+    "storage_bucket": "facebook-clone-kotlin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:834319233587:android:9dbb319a967dda15",
+        "android_client_info": {
+          "package_name": "com.example.oscar.dummy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "834319233587-g04hnldhueu0gpe5uki91a0tt1dnfhn6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAgk2_oINGsPiXC754yXK0WVmuhTzEamE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

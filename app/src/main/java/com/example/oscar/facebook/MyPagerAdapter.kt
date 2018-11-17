@@ -21,7 +21,7 @@ class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
                 FeedFragment()
             }
             1 -> {
-                FeedFragment()
+                FriendsFragment()
             }
             else -> {
                 return FriendsFragment()
