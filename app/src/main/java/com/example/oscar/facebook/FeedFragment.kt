@@ -3,6 +3,7 @@ package com.example.oscar.facebook
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -11,10 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.example.oscar.dummy.R
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Item
-import com.xwray.groupie.Section
-import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.android.synthetic.main.fragment_feed.view.*
 
@@ -38,8 +36,7 @@ class FeedFragment : Fragment() {
 
         val adapter = GroupAdapter<ViewHolder>()
 
-        val section = Section()
-        section.setHeader(HeaderItem())
+        val section = Section(HeaderItem())
         adapter.add(section)
         adapter.add(UserItem())
         adapter.add(UserItem())
@@ -48,7 +45,11 @@ class FeedFragment : Fragment() {
         return root
     }
 
+
+
+
 }// Required empty public constructor
+
 
 
 class UserItem: Item<ViewHolder>() {
