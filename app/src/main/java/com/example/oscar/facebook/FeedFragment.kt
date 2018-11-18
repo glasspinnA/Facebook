@@ -1,11 +1,9 @@
 package com.example.oscar.facebook
 
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat.startActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +14,9 @@ import com.xwray.groupie.*
 import kotlinx.android.synthetic.main.custom_post_row.view.*
 import kotlinx.android.synthetic.main.fragment_feed.view.*
 import kotlinx.android.synthetic.main.header_row.view.*
-import android.support.v4.content.ContextCompat.startActivity
-
-
+import com.example.oscar.facebook.MainActivity.Companion.currentUser
+import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 
 
 /**
@@ -30,6 +28,7 @@ class FeedFragment : Fragment() {
     private val adapter = GroupAdapter<ViewHolder>()
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,16 +36,26 @@ class FeedFragment : Fragment() {
         // Inflate the layout for this fragment
 
         root = inflater.inflate(R.layout.fragment_feed, container, false)
-
-
-
-        val section = Section(HeaderItem())
-        adapter.add(section)
-
+        fetchCurrentUser()
+        fetchStatusTextFromDB()
         root!!.rvToDo.adapter = adapter
 
-        fetchStatusTextFromDB()
         return root
+    }
+
+
+    private fun fetchCurrentUser() {
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        ref.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+            }
+            override fun onDataChange(p0: DataSnapshot) {
+                currentUser = p0.getValue(User::class.java)
+                adapter.add(HeaderItem(currentUser!!))
+                Log.d("MainActivity", "Current user ${currentUser?.profilePhotoUrl}" )
+            }
+        })
     }
 
     private fun fetchStatusTextFromDB() {
@@ -74,6 +83,27 @@ class FeedFragment : Fragment() {
     }
 }
 
+class HeaderItem(val user: User) : Item<ViewHolder>(){
+    override fun getLayout(): Int {
+        return R.layout.header_row
+    }
+    override fun bind(viewHolder: ViewHolder, position: Int) {
+
+
+        Log.d("FEED", user.profilePhotoUrl)
+        val picUrl = user.profilePhotoUrl
+        val targetImageView = viewHolder.itemView.header_row_iw_profile
+        Picasso.get().load(picUrl).into(targetImageView)
+        /*
+        viewHolder.itemView.header_row_create_post.setOnClickListener {
+            val coustomContext = it.context
+            val i = Intent(coustomContext,StatusActivity::class.java)
+            coustomContext.startActivity(i)
+        }
+        */
+    }
+}
+
 
 class UserItem(val statusTextObj: StatusText): Item<ViewHolder>() {
     override fun getLayout(): Int {
@@ -86,18 +116,5 @@ class UserItem(val statusTextObj: StatusText): Item<ViewHolder>() {
         viewHolder.itemView.tvStatusText.text = statusTextObj.statusMessage
         viewHolder.itemView.tvLikes.text = statusTextObj.nbrLikes.toString()
         viewHolder.itemView.tvComments.text = statusTextObj.nbrCommets.toString()
-    }
-}
-
-class HeaderItem() : Item<ViewHolder>(){
-    override fun getLayout(): Int {
-        return R.layout.header_row
-    }
-    override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.itemView.header_row_create_post.setOnClickListener {
-            val coustomContext = it.context
-            val i = Intent(coustomContext,StatusActivity::class.java)
-            coustomContext.startActivity(i)
-        }
     }
 }

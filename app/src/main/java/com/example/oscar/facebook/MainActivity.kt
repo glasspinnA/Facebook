@@ -1,5 +1,6 @@
 package com.example.oscar.facebook
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
@@ -15,6 +16,7 @@ import android.support.v4.view.ViewPager
 import android.util.Log
 import android.widget.TableLayout
 import com.example.oscar.dummy.R
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -28,13 +30,17 @@ class MainActivity : AppCompatActivity() {
         R.drawable.ic_outline_people_24px,
         R.drawable.ic_outline_notifications_24px)
 
+    companion object {
+        var currentUser: User? = null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        getSupportActionBar()?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         val fragmentAdapter = MyPagerAdapter(supportFragmentManager)
         viewpager_main.adapter = fragmentAdapter
 
@@ -42,13 +48,36 @@ class MainActivity : AppCompatActivity() {
         tabs_main.getTabAt(0)?.setIcon(tabIcons[0])
         tabs_main.getTabAt(1)?.setIcon(tabIcons[1])
         tabs_main.getTabAt(2)?.setIcon(tabIcons[2])
+
+        fetchCurrentUser()
+        verifyUser()
     }
 
+    private fun fetchCurrentUser() {
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        ref.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+            }
+            override fun onDataChange(p0: DataSnapshot) {
+                currentUser = p0.getValue(User::class.java)
+                Log.d("MainActivity", "Current user ${currentUser?.profilePhotoUrl}" )
+            }
+        })
+    }
+
+    private fun verifyUser() {
+        val uid = FirebaseAuth.getInstance().uid
+        if (uid == null){
+            val intent = Intent(this,RegisterActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        searchView.setIconified(false)
+        searchView.isIconified = false
         searchView.clearFocus()
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
         return true
     }
 }
