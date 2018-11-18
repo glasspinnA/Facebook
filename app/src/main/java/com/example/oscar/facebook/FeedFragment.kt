@@ -1,12 +1,11 @@
 package com.example.oscar.facebook
 
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.RecyclerView
-import android.util.Log
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +14,11 @@ import com.example.oscar.dummy.R
 import com.google.firebase.database.*
 import com.xwray.groupie.*
 import kotlinx.android.synthetic.main.custom_post_row.view.*
-import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.android.synthetic.main.fragment_feed.view.*
+import kotlinx.android.synthetic.main.header_row.view.*
+import android.support.v4.content.ContextCompat.startActivity
+
+
 
 
 /**
@@ -43,24 +45,9 @@ class FeedFragment : Fragment() {
 
         root!!.rvToDo.adapter = adapter
 
-        makeStatusUpdate()
         fetchStatusTextFromDB()
         return root
     }
-
-
-    private fun makeStatusUpdate() {
-        val userId = "0"
-        val text = "very new statustext"
-        val timestamp = System.currentTimeMillis() / 1000
-        val nbrLikes = -1
-        val nbrCommets = -1
-        val statusTextObject  = StatusText(userId,text,timestamp, nbrLikes, nbrCommets)
-
-        val ref = FirebaseDatabase.getInstance().getReference("status").push()
-        ref.setValue(statusTextObject)
-    }
-
 
     private fun fetchStatusTextFromDB() {
         val ref = FirebaseDatabase.getInstance().getReference("status")
@@ -85,14 +72,13 @@ class FeedFragment : Fragment() {
 
         })
     }
-
-
 }
 
 
 class UserItem(val statusTextObj: StatusText): Item<ViewHolder>() {
     override fun getLayout(): Int {
         return R.layout.custom_post_row
+
     }
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
@@ -103,11 +89,15 @@ class UserItem(val statusTextObj: StatusText): Item<ViewHolder>() {
     }
 }
 
-class HeaderItem: Item<ViewHolder>(){
+class HeaderItem() : Item<ViewHolder>(){
     override fun getLayout(): Int {
         return R.layout.header_row
     }
     override fun bind(viewHolder: ViewHolder, position: Int) {
+        viewHolder.itemView.header_row_create_post.setOnClickListener {
+            val coustomContext = it.context
+            val i = Intent(coustomContext,StatusActivity::class.java)
+            coustomContext.startActivity(i)
+        }
     }
-
 }
