@@ -19,7 +19,9 @@ import kotlinx.android.synthetic.main.header_row.view.*
 import com.example.oscar.facebook.MainActivity.Companion.currentUser
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_feed.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 /**
@@ -29,10 +31,11 @@ class FeedFragment : Fragment() {
 
     private var root: View? = null   // create a global variable which will hold your layout
     private val adapter = GroupAdapter<ViewHolder>()
+    private val hash = HashMap<String,StatusText>()
+
     companion object {
         val USER_KEY = "USER_KEY"
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,8 +44,8 @@ class FeedFragment : Fragment() {
         // Inflate the layout for this fragment
 
         root = inflater.inflate(R.layout.fragment_feed, container, false)
-        fetchCurrentUser()
         fetchStatusTextFromDB()
+        fetchCurrentUser()
         root!!.rvToDo.adapter = adapter
 
         return root
@@ -50,46 +53,44 @@ class FeedFragment : Fragment() {
 
 
     private fun fetchCurrentUser() {
-        adapter.clear()
         val uid = FirebaseAuth.getInstance().uid
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        val ref  = FirebaseDatabase.getInstance().getReference("/users/$uid")
         ref.addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
             }
             override fun onDataChange(p0: DataSnapshot) {
                 currentUser = p0.getValue(User::class.java)
-                val section = Section()
-                section.setHeader(HeaderItem(currentUser!!))
-                adapter.add(section)
                 Log.d("FeedFragment", "Current user ${currentUser?.profilePhotoUrl}" )
             }
         })
     }
 
     private fun fetchStatusTextFromDB() {
-        adapter.clear()
         val ref = FirebaseDatabase.getInstance().getReference("status")
         ref.addChildEventListener(object: ChildEventListener{
-            override fun onCancelled(p0: DatabaseError) {
+            override fun onCancelled(p0: DatabaseError) {}
 
-            }
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
 
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-            }
-
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-            }
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val value = p0.getValue(StatusText::class.java) ?: return
-                adapter.add(UserItem(value))
+                hash[p0.key!!] = value
+                refreshRecyclerViewMessage()
             }
-
-            override fun onChildRemoved(p0: DataSnapshot) {
-            }
-
+            override fun onChildRemoved(p0: DataSnapshot) {}
         })
     }
+
+    private fun refreshRecyclerViewMessage(){
+        adapter.clear()
+        adapter.add(HeaderItem(currentUser!!))
+        hash.values.forEach{
+            adapter.add(UserItem(it))
+        }
+    }
+
 }
 
 class HeaderItem(val user: User) : Item<ViewHolder>(){
@@ -109,11 +110,10 @@ class HeaderItem(val user: User) : Item<ViewHolder>(){
     }
 }
 
-
 class UserItem(val statusTextObj: StatusText): Item<ViewHolder>() {
+
     override fun getLayout(): Int {
         return R.layout.custom_post_row
-
     }
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
