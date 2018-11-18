@@ -49,6 +49,14 @@ class MainActivity : AppCompatActivity() {
         tabs_main.getTabAt(1)?.setIcon(tabIcons[1])
         tabs_main.getTabAt(2)?.setIcon(tabIcons[2])
 
+
+        main_btn_log_out.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this,RegisterActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
         fetchCurrentUser()
         verifyUser()
     }

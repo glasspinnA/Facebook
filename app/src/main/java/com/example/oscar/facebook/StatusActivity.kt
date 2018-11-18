@@ -15,11 +15,13 @@ import kotlinx.android.synthetic.main.activity_status.*
 class StatusActivity : AppCompatActivity() {
 
     private val TAG = "StatusActivity"
+    var currentUser: User? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_status)
+        currentUser = intent.getParcelableExtra<User>(FeedFragment.USER_KEY)
         supportActionBar?.title = "Create a post"
 
     }
@@ -39,12 +41,14 @@ class StatusActivity : AppCompatActivity() {
     }
 
     private fun createPost() {
-        val userId = "0"
+        val userId = currentUser?.userId
+        val userPhoto = currentUser?.profilePhotoUrl
+        val userName = currentUser?.username
         val text = etCreateStatus.text.toString()
         val timestamp = System.currentTimeMillis() / 1000
         val nbrLikes = -1
         val nbrCommets = -1
-        val statusTextObject  = StatusText(userId,text,timestamp, nbrLikes, nbrCommets)
+        val statusTextObject  = StatusText(userId!!,userPhoto!!,userName!!,text,timestamp, nbrLikes, nbrCommets)
 
         val ref = FirebaseDatabase.getInstance().getReference("status").push()
         ref.setValue(statusTextObject)    }
