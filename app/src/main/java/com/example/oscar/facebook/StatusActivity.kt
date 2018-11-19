@@ -41,6 +41,7 @@ class StatusActivity : AppCompatActivity() {
     }
 
     private fun createPost() {
+        val ref = FirebaseDatabase.getInstance().getReference("status").push()
         val userId = currentUser?.userId
         val userPhoto = currentUser?.profilePhotoUrl
         val userName = currentUser?.username
@@ -48,10 +49,9 @@ class StatusActivity : AppCompatActivity() {
         val timestamp = System.currentTimeMillis() / 1000
         val nbrLikes = -1
         val nbrCommets = -1
-        val statusTextObject  = StatusText(userId!!,userPhoto!!,userName!!,text,timestamp, nbrLikes, nbrCommets)
-
-        val ref = FirebaseDatabase.getInstance().getReference("status").push()
-        ref.setValue(statusTextObject)    }
+        val statusTextObject = StatusText(ref.key!!,userId!!,userPhoto!!,userName!!,text,timestamp, nbrLikes, nbrCommets)
+        ref.setValue(statusTextObject)
+    }
 
     override fun onBackPressed() {
         Log.d(TAG,"BACK PRESSED")

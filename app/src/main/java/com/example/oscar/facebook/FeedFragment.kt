@@ -63,6 +63,7 @@ class FeedFragment : Fragment() {
             override fun onDataChange(p0: DataSnapshot) {
                 testu = p0.getValue(User::class.java)
                 fetchStatusTextFromDB()
+                updateRecyclerView()
             }
         })
     }
@@ -94,13 +95,6 @@ class FeedFragment : Fragment() {
         }else{
             groupAdapter.add(HeaderItem(testu!!))
         }
-        /*
-
-
-              hashMapStatusTexts.values.forEach{
-                  groupAdapter.add(UserItem(it))
-              }
-      */
 
         for(i in hashMapStatusTexts.values.reversed()){
             groupAdapter.add(UserItem(i))
@@ -124,31 +118,5 @@ class HeaderItem(val user: User) : Item<ViewHolder>(){
             i.putExtra(USER_KEY,user)
             customContext.startActivity(i)
         }
-    }
-}
-
-class UserItem(val statusTextObj: StatusText): Item<ViewHolder>() {
-
-    override fun getLayout(): Int {
-        return R.layout.custom_post_row
-    }
-
-    override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.itemView.tvProfileName.text = statusTextObj.userName
-        viewHolder.itemView.tvStatusText.text = statusTextObj.statusMessage
-        viewHolder.itemView.custom_post_tv_time.text = timeConverter(statusTextObj.timestamp)
-        viewHolder.itemView.tvLikes.text = statusTextObj.nbrLikes.toString()
-        viewHolder.itemView.tvComments.text = statusTextObj.nbrCommets.toString()
-        val picUrl = statusTextObj.userPhoto
-        val targetImageView = viewHolder.itemView.ivProfilePic
-        Picasso.get().load(picUrl).into(targetImageView)
-    }
-
-    private fun timeConverter(timestamp: Long): CharSequence? {
-        val date = Date(timestamp)
-        val dateFormat = SimpleDateFormat("HH:mm")
-        val dateStr = dateFormat.format(date)
-        Log.d("Feed", dateStr)
-        return dateStr
     }
 }
