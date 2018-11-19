@@ -16,12 +16,13 @@ import com.xwray.groupie.*
 import kotlinx.android.synthetic.main.custom_post_row.view.*
 import kotlinx.android.synthetic.main.fragment_feed.view.*
 import kotlinx.android.synthetic.main.header_row.view.*
-import com.example.oscar.facebook.MainActivity.Companion.currentUser
+import com.example.oscar.facebook.MainActivity.Companion.currentLogInUser
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
+import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 
 
 /**
@@ -30,10 +31,11 @@ import kotlin.collections.HashMap
 class FeedFragment : Fragment() {
 
     private var root: View? = null   // create a global variable which will hold your layout
-    private val adapter = GroupAdapter<ViewHolder>()
-    private val hash = HashMap<String,StatusText>()
+    private val groupAdapter = GroupAdapter<ViewHolder>()
+    private val hashMapStatusTexts = LinkedHashMap<String,StatusText>()
 
     companion object {
+        private var testu: User? = null
         val USER_KEY = "USER_KEY"
     }
 
@@ -44,12 +46,12 @@ class FeedFragment : Fragment() {
         // Inflate the layout for this fragment
 
         root = inflater.inflate(R.layout.fragment_feed, container, false)
-        fetchStatusTextFromDB()
+        //fetchStatusTextFromDB()
         fetchCurrentUser()
-        root!!.rvToDo.adapter = adapter
-
+        root!!.rvToDo.adapter = groupAdapter
         return root
     }
+
 
 
     private fun fetchCurrentUser() {
@@ -59,8 +61,8 @@ class FeedFragment : Fragment() {
             override fun onCancelled(p0: DatabaseError) {
             }
             override fun onDataChange(p0: DataSnapshot) {
-                currentUser = p0.getValue(User::class.java)
-                Log.d("FeedFragment", "Current user ${currentUser?.profilePhotoUrl}" )
+                testu = p0.getValue(User::class.java)
+                fetchStatusTextFromDB()
             }
         })
     }
@@ -76,19 +78,34 @@ class FeedFragment : Fragment() {
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val value = p0.getValue(StatusText::class.java) ?: return
-                hash[p0.key!!] = value
-                refreshRecyclerViewMessage()
+                hashMapStatusTexts[p0.key!!] = value
+                updateRecyclerView()
             }
             override fun onChildRemoved(p0: DataSnapshot) {}
         })
     }
 
-    private fun refreshRecyclerViewMessage(){
-        adapter.clear()
-        adapter.add(HeaderItem(currentUser!!))
-        hash.values.forEach{
-            adapter.add(UserItem(it))
+    private fun updateRecyclerView(){
+        groupAdapter.clear()
+        if(testu == null){
+            fetchCurrentUser()
+            Log.d("Feed", testu!!.userId)
+            groupAdapter.add(HeaderItem(testu!!))
+        }else{
+            groupAdapter.add(HeaderItem(testu!!))
         }
+        /*
+
+
+              hashMapStatusTexts.values.forEach{
+                  groupAdapter.add(UserItem(it))
+              }
+      */
+
+        for(i in hashMapStatusTexts.values.reversed()){
+            groupAdapter.add(UserItem(i))
+        }
+
     }
 
 }
@@ -118,13 +135,20 @@ class UserItem(val statusTextObj: StatusText): Item<ViewHolder>() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.tvProfileName.text = statusTextObj.userName
-        Log.d("StatusActivity", statusTextObj.userPhoto)
+        viewHolder.itemView.tvStatusText.text = statusTextObj.statusMessage
+        viewHolder.itemView.custom_post_tv_time.text = timeConverter(statusTextObj.timestamp)
+        viewHolder.itemView.tvLikes.text = statusTextObj.nbrLikes.toString()
+        viewHolder.itemView.tvComments.text = statusTextObj.nbrCommets.toString()
         val picUrl = statusTextObj.userPhoto
         val targetImageView = viewHolder.itemView.ivProfilePic
         Picasso.get().load(picUrl).into(targetImageView)
+    }
 
-        viewHolder.itemView.tvStatusText.text = statusTextObj.statusMessage
-        viewHolder.itemView.tvLikes.text = statusTextObj.nbrLikes.toString()
-        viewHolder.itemView.tvComments.text = statusTextObj.nbrCommets.toString()
+    private fun timeConverter(timestamp: Long): CharSequence? {
+        val date = Date(timestamp)
+        val dateFormat = SimpleDateFormat("HH:mm")
+        val dateStr = dateFormat.format(date)
+        Log.d("Feed", dateStr)
+        return dateStr
     }
 }

@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@drawable/rounded_status_card"
         android:layout_marginTop="5dp">
 
     <Button
@@ -13,7 +13,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:id="@+id/btnSelectPhoto" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp" android:layout_marginTop="20dp"
+            android:layout_marginRight="16dp" android:layout_marginTop="12dp"
             app:layout_constraintTop_toTopOf="parent"
     />
     <Button
@@ -36,9 +36,11 @@
             android:id="@+id/header_row_iw_profile"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
+            app:civ_border_color="@android:color/black"
+            app:civ_border_width="1dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/btn_star"

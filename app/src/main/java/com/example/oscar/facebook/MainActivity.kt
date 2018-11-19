@@ -4,24 +4,15 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
-import android.view.View
 import android.view.Menu
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Item
-import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_main.*
-import android.support.design.widget.TabLayout
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
 import android.util.Log
-import android.widget.TableLayout
 import com.example.oscar.dummy.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.xwray.groupie.Section
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         R.drawable.ic_outline_notifications_24px)
 
     companion object {
-        var currentUser: User? = null
+        var currentLogInUser: User? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,8 +59,8 @@ class MainActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {
             }
             override fun onDataChange(p0: DataSnapshot) {
-                currentUser = p0.getValue(User::class.java)
-                Log.d("MainActivity", "Current user ${currentUser?.profilePhotoUrl}" )
+                currentLogInUser = p0.getValue(User::class.java)
+                Log.d("MainActivity", "Current user ${currentLogInUser?.profilePhotoUrl}" )
             }
         })
     }

@@ -7,13 +7,14 @@
         android:layout_height="match_parent">
 
     <EditText
+            android:textColorHint="@android:color/black"
             android:autofillHints="@string/status_activity_editText"
             android:background="@android:color/transparent"
             android:paddingLeft="15dp"
             android:gravity="top"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:inputType="textPersonName"
+            android:inputType="textCapSentences"
             android:hint="@string/status_activity_editText"
             android:ems="10"
             android:id="@+id/etCreateStatus" app:layout_constraintEnd_toEndOf="parent"
