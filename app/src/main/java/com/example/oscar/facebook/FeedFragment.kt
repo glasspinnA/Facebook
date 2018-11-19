@@ -97,7 +97,7 @@ class FeedFragment : Fragment() {
         }
 
         for(i in hashMapStatusTexts.values.reversed()){
-            groupAdapter.add(UserItem(i))
+            groupAdapter.add(UserItem(context!!,i))
         }
 
     }

@@ -1,5 +1,5 @@
 package com.example.oscar.facebook
 
-class StatusComment(val comment: String) {
+class StatusComment(val commentText: String) {
     constructor():this("")
 }

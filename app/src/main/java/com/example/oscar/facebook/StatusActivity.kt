@@ -44,7 +44,7 @@ class StatusActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance().getReference("status").push()
         val userId = currentUser?.userId
         val userPhoto = currentUser?.profilePhotoUrl
-        val userName = currentUser?.username
+        val userName = currentUser?.firstname
         val text = etCreateStatus.text.toString()
         val timestamp = System.currentTimeMillis() / 1000
         val nbrLikes = -1
