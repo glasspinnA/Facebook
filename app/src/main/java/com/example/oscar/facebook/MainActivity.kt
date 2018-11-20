@@ -13,6 +13,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import android.widget.LinearLayout
+import android.support.design.widget.BottomSheetBehavior
+
+
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -78,6 +84,12 @@ class MainActivity : AppCompatActivity() {
         searchView.isIconified = false
         searchView.clearFocus()
         return true
+    }
+
+    fun showCommentPanel() {
+        val llBottomSheet = findViewById<LinearLayout>(R.id.bottom_sheet)
+        val bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 }
 
