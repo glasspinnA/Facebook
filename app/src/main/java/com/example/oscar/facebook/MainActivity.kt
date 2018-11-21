@@ -9,19 +9,20 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Log
 import com.example.oscar.dummy.R
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import android.widget.LinearLayout
 import android.support.design.widget.BottomSheetBehavior
-
-
-
-
+import com.google.firebase.database.*
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.Item
+import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_feed.view.*
 
 
 class MainActivity : AppCompatActivity() {
+    private val groupAdapter = GroupAdapter<ViewHolder>()
+    private val hashMapStatusTexts = LinkedHashMap<String,StatusComment>()
+
     private val tabIcons = intArrayOf(
         R.drawable.ic_outline_featured_play_list_24px,
         R.drawable.ic_outline_people_24px,
@@ -45,6 +46,10 @@ class MainActivity : AppCompatActivity() {
         tabs_main.getTabAt(0)?.setIcon(tabIcons[0])
         tabs_main.getTabAt(1)?.setIcon(tabIcons[1])
         tabs_main.getTabAt(2)?.setIcon(tabIcons[2])
+
+
+        bottom_sheet_rv.adapter = groupAdapter
+
 
 
         main_btn_log_out.setOnClickListener {
@@ -90,6 +95,33 @@ class MainActivity : AppCompatActivity() {
         val llBottomSheet = findViewById<LinearLayout>(R.id.bottom_sheet)
         val bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    fun fetchStatusComments(postId: String) {
+        val ref = FirebaseDatabase.getInstance().getReference("status-comment/$postId")
+        ref.addChildEventListener(object: ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val response = p0.getValue(StatusComment::class.java)?: return
+                hashMapStatusTexts[p0.key!!] = response
+                updateRView()
+                Log.d("MainActivity", "Comment is : ${response.commentText}")
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {}
+        })
+    }
+
+    private fun updateRView(){
+        groupAdapter.clear()
+        for(i in hashMapStatusTexts.values.reversed()){
+            groupAdapter.add(CommentItem(i))
+        }
     }
 }
 

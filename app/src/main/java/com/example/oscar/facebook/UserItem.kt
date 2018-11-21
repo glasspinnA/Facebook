@@ -4,9 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import com.example.oscar.dummy.R
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
@@ -38,31 +35,14 @@ class UserItem(val context: Context, val statusTextObj: StatusText): Item<ViewHo
 
             holder.custom_post_btn_like.setOnClickListener {
                 //postStatusComment(statusTextObj.postId)
-                (context as MainActivity).showCommentPanel()
             }
 
             holder.custom_post_btn_comment.setOnClickListener {
-                fetchStatusComments(statusTextObj.postId)
+                (context as MainActivity).fetchStatusComments(statusTextObj.postId)
+                (context as MainActivity).showCommentPanel()
+
             }
 
-        }
-
-        private fun fetchStatusComments(postId: String) {
-            val ref = FirebaseDatabase.getInstance().getReference("status-comment/$postId")
-            ref.addChildEventListener(object: ChildEventListener {
-                override fun onCancelled(p0: DatabaseError) {}
-
-                override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
-
-                override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
-
-                override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                    val response = p0.getValue(StatusComment::class.java)?: return
-                    Log.d(TAG, "Comment is : ${response.commentText}")
-                }
-
-                override fun onChildRemoved(p0: DataSnapshot) {}
-            })
         }
 
         private fun postStatusComment(postId: String) {
