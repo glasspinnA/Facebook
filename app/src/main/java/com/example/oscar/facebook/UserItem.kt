@@ -34,7 +34,7 @@ class UserItem(val context: Context, val statusTextObj: StatusText): Item<ViewHo
 
 
             holder.custom_post_btn_like.setOnClickListener {
-                //postStatusComment(statusTextObj.postId)
+                //postStatusComment(statusTextObj.postId, statusTextObj.firstname, statusTextObj.userPhoto)
             }
 
             holder.custom_post_btn_comment.setOnClickListener {
@@ -43,18 +43,6 @@ class UserItem(val context: Context, val statusTextObj: StatusText): Item<ViewHo
 
             }
 
-        }
-
-        private fun postStatusComment(postId: String) {
-            val ref = FirebaseDatabase.getInstance().getReference("status-comment/$postId").push()
-            val dummyString: String = "Dis is a dummy comment"
-            ref.setValue(StatusComment(dummyString))
-                .addOnSuccessListener {
-                    Log.d(TAG,"Comment successfully posted")
-                }
-                .addOnFailureListener{
-                    Toast.makeText(context,"Comment could not be posted!", Toast.LENGTH_SHORT).show()
-                }
         }
 
         private fun timeConverter(timestamp: Long): CharSequence? {
