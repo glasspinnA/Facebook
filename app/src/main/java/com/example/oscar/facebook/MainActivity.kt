@@ -19,6 +19,12 @@ import kotlinx.android.synthetic.main.bottom_sheet.*
 
 
 class MainActivity : AppCompatActivity() {
+    //TODO: Fix Comment layout - Fix so EditText gets over keyboard when pressed
+    //TODO: implement Comment counter
+    //TODO: implement like counter
+    //TODO: FiX friends Fragment
+    //TODO: Be able to post with camera / photos
+
     private val groupAdapter = GroupAdapter<ViewHolder>()
     private val hashMapStatusTexts = LinkedHashMap<String,StatusComment>()
 
@@ -99,6 +105,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showCommentPanel() {
+        clearList()
         val llBottomSheet = findViewById<LinearLayout>(R.id.bottom_sheet)
         val bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -118,13 +125,13 @@ class MainActivity : AppCompatActivity() {
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val response = p0.getValue(StatusComment::class.java)?: return
+                Log.d("MainActivity", "Key is: " + p0.key)
                 hashMapStatusTexts[p0.key!!] = response
                 updateRView()
                 Log.d("MainActivity", "Comment is : ${response.commentText}")
             }
             override fun onChildRemoved(p0: DataSnapshot) {}
         })
-
     }
 
     private fun listenForPostCommentText(postId: String) {
@@ -143,6 +150,7 @@ class MainActivity : AppCompatActivity() {
         ref.setValue(StatusComment(currentLogInUser!!.firstname, currentLogInUser!!.profilePhotoUrl,commentText))
             .addOnSuccessListener {
                 Log.d("MainActivity","Comment successfully posted")
+                bottom_sheet_et_comment.text.clear()
             }
             .addOnFailureListener{
                 Toast.makeText(this,"Comment could not be posted!", Toast.LENGTH_SHORT).show()
@@ -154,6 +162,11 @@ class MainActivity : AppCompatActivity() {
         for(i in hashMapStatusTexts.values.reversed()){
             groupAdapter.add(CommentItem(i))
         }
+    }
+
+    private fun clearList(){
+        groupAdapter.clear()
+        hashMapStatusTexts.clear()
     }
 }
 
