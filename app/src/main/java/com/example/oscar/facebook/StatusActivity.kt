@@ -46,7 +46,7 @@ class StatusActivity : AppCompatActivity() {
         val userPhoto = currentUser?.profilePhotoUrl
         val userName = currentUser?.firstname
         val text = etCreateStatus.text.toString()
-        val timestamp = System.currentTimeMillis() / 1000
+        val timestamp = System.currentTimeMillis()
         val nbrLikes = -1
         val nbrCommets = -1
         val statusTextObject = StatusText(ref.key!!,userId!!,userPhoto!!,userName!!,text,timestamp, nbrLikes, nbrCommets)

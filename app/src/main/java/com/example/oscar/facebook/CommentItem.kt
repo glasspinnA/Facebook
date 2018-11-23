@@ -1,5 +1,6 @@
 package com.example.oscar.facebook
 
+import android.text.format.DateUtils
 import android.util.Log
 import com.example.oscar.dummy.R
 import com.squareup.picasso.Picasso
@@ -19,8 +20,15 @@ class CommentItem(val response: StatusComment) : Item<ViewHolder>() {
         val picUrl = response.profilePicUrl
         val targetImageView = viewHolder.itemView.comment_item_iv_profile_pic
         Picasso.get().load(picUrl).into(targetImageView)
+        viewHolder.itemView.comment_item_tv_timestamp.text = timeConverter(response.timestamp)
+    }
 
-        Log.d("CommentItem", "NULL " + response.commentText)
+    private fun timeConverter(timestamp: Long): CharSequence? {
+        val timeAgo = DateUtils.getRelativeTimeSpanString(timestamp, System.currentTimeMillis(),
+            DateUtils.MINUTE_IN_MILLIS,
+            DateUtils.FORMAT_ABBREV_RELATIVE
+        ).toString()
+        return timeAgo
     }
 
 }

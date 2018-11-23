@@ -19,7 +19,8 @@ import kotlinx.android.synthetic.main.bottom_sheet.*
 
 
 class MainActivity : AppCompatActivity() {
-    //TODO: Fix Comment layout - Fix so EditText gets over keyboard when pressed
+    //TODO: Fix Comment layout - Fix so EditText gets over keyboard when pressed - DONE
+    //TODO Fix Time counter - DONE
     //TODO: implement Comment counter
     //TODO: implement like counter
     //TODO: FiX friends Fragment
@@ -146,8 +147,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun postStatusCommentToDB(postId: String, commentText: String) {
+        val currentTimestamp = System.currentTimeMillis()
         val ref = FirebaseDatabase.getInstance().getReference("status-comment/$postId").push()
-        ref.setValue(StatusComment(currentLogInUser!!.firstname, currentLogInUser!!.profilePhotoUrl,commentText))
+        ref.setValue(StatusComment(currentLogInUser!!.firstname, currentLogInUser!!.profilePhotoUrl,commentText,currentTimestamp))
             .addOnSuccessListener {
                 Log.d("MainActivity","Comment successfully posted")
                 bottom_sheet_et_comment.text.clear()

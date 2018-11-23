@@ -1,6 +1,7 @@
 package com.example.oscar.facebook
 
 import android.content.Context
+import android.text.format.DateUtils
 import android.util.Log
 import android.widget.Toast
 import com.example.oscar.dummy.R
@@ -46,10 +47,10 @@ class UserItem(val context: Context, val statusTextObj: StatusText): Item<ViewHo
         }
 
         private fun timeConverter(timestamp: Long): CharSequence? {
-            val date = Date(timestamp * 1000L)
-            val sdf = SimpleDateFormat("HH:mm")
-            val formattedDate = sdf.format(date)
-
-            return formattedDate
+            val timeAgo = DateUtils.getRelativeTimeSpanString(timestamp, System.currentTimeMillis(),
+                DateUtils.MINUTE_IN_MILLIS,
+                DateUtils.FORMAT_ABBREV_RELATIVE
+            ).toString()
+            return timeAgo
         }
     }
