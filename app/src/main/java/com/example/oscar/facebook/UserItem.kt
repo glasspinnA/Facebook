@@ -3,15 +3,12 @@ package com.example.oscar.facebook
 import android.content.Context
 import android.text.format.DateUtils
 import android.util.Log
-import android.widget.Toast
 import com.example.oscar.dummy.R
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.custom_post_row.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 class UserItem(val context: Context, val statusTextObj: StatusText): Item<ViewHolder>() {
         var TAG = "UserItem"
@@ -36,22 +33,30 @@ class UserItem(val context: Context, val statusTextObj: StatusText): Item<ViewHo
 
             holder.custom_post_btn_like.setOnClickListener {
                 val nbrLikes = (statusTextObj.nbrLikes + 1)
-                
-                fetchLikes(statusTextObj.postId, nbrLikes)
+
+                updateLikeCounter(statusTextObj.postId, nbrLikes)
+
                 holder.tvLikes.text = nbrLikes.toString()
             }
 
             holder.custom_post_btn_comment.setOnClickListener {
-                (context as MainActivity).fetchStatusComments(statusTextObj.postId)
-                (context as MainActivity).showCommentPanel()
+                context as MainActivity
+                context.fetchStatusComments(statusTextObj.postId)
+                context.showCommentPanel()
             }
 
         }
 
-    private fun fetchLikes(postId: String, nbrLikes: Int) {
-        val ref = FirebaseDatabase.getInstance().getReference("status/$postId").child("nbrLike").setValue(nbrLikes)
+    /**
+     * Method that updates the number of likes on a status post
+     */
+    private fun updateLikeCounter(postId: String, nbrLikes: Int) {
+        val ref = FirebaseDatabase.getInstance().getReference("status/$postId").child("nbrLikes").setValue(nbrLikes)
     }
 
+    /**
+     * Method that convert timestamp to showing time as "time ago" on status posts
+     */
     private fun timeConverter(timestamp: Long): CharSequence? {
             val timeAgo = DateUtils.getRelativeTimeSpanString(timestamp, System.currentTimeMillis(),
                 DateUtils.MINUTE_IN_MILLIS,
