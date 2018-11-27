@@ -35,18 +35,24 @@ class UserItem(val context: Context, val statusTextObj: StatusText): Item<ViewHo
 
 
             holder.custom_post_btn_like.setOnClickListener {
-                //postStatusComment(statusTextObj.postId, statusTextObj.firstname, statusTextObj.userPhoto)
+                val nbrLikes = (statusTextObj.nbrLikes + 1)
+                
+                fetchLikes(statusTextObj.postId, nbrLikes)
+                holder.tvLikes.text = nbrLikes.toString()
             }
 
             holder.custom_post_btn_comment.setOnClickListener {
                 (context as MainActivity).fetchStatusComments(statusTextObj.postId)
                 (context as MainActivity).showCommentPanel()
-
             }
 
         }
 
-        private fun timeConverter(timestamp: Long): CharSequence? {
+    private fun fetchLikes(postId: String, nbrLikes: Int) {
+        val ref = FirebaseDatabase.getInstance().getReference("status/$postId").child("nbrLike").setValue(nbrLikes)
+    }
+
+    private fun timeConverter(timestamp: Long): CharSequence? {
             val timeAgo = DateUtils.getRelativeTimeSpanString(timestamp, System.currentTimeMillis(),
                 DateUtils.MINUTE_IN_MILLIS,
                 DateUtils.FORMAT_ABBREV_RELATIVE
