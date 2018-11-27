@@ -19,8 +19,6 @@ import kotlinx.android.synthetic.main.bottom_sheet.*
 
 
 class MainActivity : AppCompatActivity() {
-    //TODO: Fix Comment layout - Fix so EditText gets over keyboard when pressed - DONE
-    //TODO Fix Time counter - DONE
     //TODO: implement Comment counter
     //TODO: implement like counter
     //TODO: FiX friends Fragment
@@ -68,6 +66,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Method that logs out the user from the app
+     */
     private fun logOutUser() {
         main_btn_log_out.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
@@ -112,10 +113,10 @@ class MainActivity : AppCompatActivity() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    fun fetchStatusComments(postId: String) {
+    fun fetchStatusComments(postId: String, nbrCommets: Int) {
         val ref = FirebaseDatabase.getInstance().getReference("status-comment/$postId")
 
-        listenForPostCommentText(postId)
+        listenForPostCommentText(postId, nbrCommets)
 
         ref.addChildEventListener(object: ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {}
@@ -135,23 +136,28 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun listenForPostCommentText(postId: String) {
+    private fun listenForPostCommentText(postId: String, nbrCommets: Int) {
         bottom_sheet_btn_post.setOnClickListener {
             val commentText = bottom_sheet_et_comment.text.toString()
             if(commentText.isEmpty()){
                 Toast.makeText(this,"Enter a comment!",Toast.LENGTH_SHORT).show()
             }else{
-                postStatusCommentToDB(postId, commentText)
+                postStatusCommentToDB(postId, commentText, nbrCommets)
             }
         }
     }
 
-    private fun postStatusCommentToDB(postId: String, commentText: String) {
+    /**
+     * Method that storage comment on a given post on Firebase
+     */
+    private fun postStatusCommentToDB(postId: String, commentText: String, nbrCommets: Int) {
+        val updateNbrComments = nbrCommets + 1
         val currentTimestamp = System.currentTimeMillis()
         val ref = FirebaseDatabase.getInstance().getReference("status-comment/$postId").push()
         ref.setValue(StatusComment(currentLogInUser!!.firstname, currentLogInUser!!.profilePhotoUrl,commentText,currentTimestamp))
             .addOnSuccessListener {
                 Log.d("MainActivity","Comment successfully posted")
+                val ref = FirebaseDatabase.getInstance().getReference("status/$postId").child("nbrCommets").setValue(updateNbrComments)
                 bottom_sheet_et_comment.text.clear()
             }
             .addOnFailureListener{

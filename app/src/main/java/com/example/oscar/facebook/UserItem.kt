@@ -41,7 +41,7 @@ class UserItem(val context: Context, val statusTextObj: StatusText): Item<ViewHo
 
             holder.custom_post_btn_comment.setOnClickListener {
                 context as MainActivity
-                context.fetchStatusComments(statusTextObj.postId)
+                context.fetchStatusComments(statusTextObj.postId, statusTextObj.nbrCommets)
                 context.showCommentPanel()
             }
 
