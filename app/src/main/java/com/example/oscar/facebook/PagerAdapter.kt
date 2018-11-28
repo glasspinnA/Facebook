@@ -24,6 +24,7 @@ class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         return 3
     }
 
+    /*
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
             0 -> "Feed"
@@ -33,4 +34,5 @@ class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
             }
         }
     }
+    */
 }

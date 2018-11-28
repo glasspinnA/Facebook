@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#2980b9</color>
     <color name="colorAccent">#ecf0f1</color>
     <color name="feedBackground">#ecf0f1</color>
+
+    <color name="FacebookDarkBlue">#3b5998</color>
+    <color name="FacebookLightBlue">#8b9dc3</color>
+    <color name="FacebookGrey">#dfe3ee</color>
+    <color name="FacebookGreyWhite">#f7f7f7</color>
+    <color name="FacebookWhite">#ffffff</color>
 </resources>
