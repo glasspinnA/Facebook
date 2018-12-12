@@ -3,6 +3,7 @@ package com.example.oscar.facebook
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import kotlinx.android.synthetic.main.activity_main.*
@@ -47,6 +48,10 @@ class MainActivity : AppCompatActivity() {
         viewpager_main.adapter = fragmentAdapter
 
 
+        btnPhoto.setOnClickListener{
+            dispatchTakePictureIntent()
+        }
+
         initTabLayout()
 
         bottom_sheet_rv.adapter = groupAdapter
@@ -75,6 +80,16 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,RegisterActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+        }
+    }
+
+    val REQUEST_IMAGE_CAPTURE = 1
+
+    private fun dispatchTakePictureIntent() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            }
         }
     }
 

@@ -65,7 +65,7 @@ class FeedFragment : Fragment() {
             override fun onDataChange(p0: DataSnapshot) {
                 testu = p0.getValue(User::class.java)
                 fetchStatusTextFromDB()
-                updateRecyclerView()
+                //updateRecyclerView()
             }
         })
     }
@@ -92,7 +92,7 @@ class FeedFragment : Fragment() {
         groupAdapter.clear()
         if(testu == null){
             fetchCurrentUser()
-            Log.d("Feed", testu!!.userId)
+            //Log.d("Feed", testu!!.userId)
             groupAdapter.add(HeaderItem(testu!!))
         }else{
             groupAdapter.add(HeaderItem(testu!!))

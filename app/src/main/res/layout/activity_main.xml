@@ -29,6 +29,10 @@
                     android:background="@drawable/ic_round_exit_to_app_24px"
             />
         </android.support.v7.widget.Toolbar>
+        <Button
+                android:text="Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/btnPhoto"/>
         <android.support.design.widget.TabLayout
                 android:id="@+id/tabs_main"
                 android:layout_width="match_parent"
