@@ -10,10 +10,30 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import android.support.v4.content.ContextCompat.startActivity
 
+
+
+//TODO: FIX SO PASSING CONTEXT TO ALL METHOD IS NOT NECCESARY
 
 val REQUEST_IMAGE_CAPTURE = 1
 val REQUEST_TAKE_PHOTO = 1
+
+
+fun showImageGallery(mainActivity: MainActivity){
+    val sdDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+
+    val f = File(sdDir, "pictures_40")
+
+    val intent = Intent(Intent.ACTION_VIEW)
+
+    intent.setDataAndType(Uri.withAppendedPath(Uri.fromFile(f), "/pictures_40"), "image/*")
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+    Log.d("CAMERA",f.path)
+
+    mainActivity.startActivity(intent)
+}
 
 fun dispatchTakePictureIntent(mainActivity: MainActivity) {
 

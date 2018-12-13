@@ -16,6 +16,7 @@ import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.bottom_sheet.*
+import kotlinx.android.synthetic.main.bottom_sheet_camera_option.*
 import java.util.*
 
 
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
 
         btnPhoto.setOnClickListener{
-            dispatchTakePictureIntent(this)
+            showCameraPanel()
         }
 
         initTabLayout()
@@ -68,7 +69,6 @@ class MainActivity : AppCompatActivity() {
         tabs_main.getTabAt(0)?.setIcon(tabIcons[0])
         tabs_main.getTabAt(1)?.setIcon(tabIcons[1])
         tabs_main.getTabAt(2)?.setIcon(tabIcons[2])
-
     }
 
     /**
@@ -96,6 +96,9 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Method for verifying the logged in user
+     */
     private fun verifyUser() {
         val uid = FirebaseAuth.getInstance().uid
         if (uid == null){
@@ -111,6 +114,35 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    /**
+     * Method for show camera panel
+     */
+    private fun showCameraPanel() {
+        val llBottomSheetCamera = findViewById<LinearLayout>(R.id.bottom_sheet_camera_option)
+        val bottomSheetCameraBehavior = BottomSheetBehavior.from(llBottomSheetCamera)
+
+        if(bottomSheetCameraBehavior.state == BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheetCameraBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }else if(bottomSheetCameraBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
+            bottomSheetCameraBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        cameraListeners()
+    }
+
+    /**
+     * Method for button listener in camera panel
+     */
+    private fun cameraListeners(){
+        btn_bottom_sheet_camera_camera.setOnClickListener{
+            dispatchTakePictureIntent(this)
+        }
+
+        btn_bottom_sheet_camera_gallery.setOnClickListener{
+            showImageGallery(this)
+        }
+    }
+
     fun showCommentPanel() {
         clearList()
         val llBottomSheet = findViewById<LinearLayout>(R.id.bottom_sheet)
@@ -118,6 +150,9 @@ class MainActivity : AppCompatActivity() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
+    /**
+     * Method for fetching comments on a given status
+     */
     fun fetchStatusComments(postId: String, nbrCommets: Int) {
         val ref = FirebaseDatabase.getInstance().getReference("status-comment/$postId")
 
@@ -141,6 +176,9 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Method that listen if the users is about to send away a comment on a status
+     */
     private fun listenForPostCommentText(postId: String, nbrCommets: Int) {
         bottom_sheet_btn_post.setOnClickListener {
             val commentText = bottom_sheet_et_comment.text.toString()
