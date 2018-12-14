@@ -13,22 +13,24 @@
             android:paddingLeft="15dp"
             android:gravity="top"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="350dp"
             android:inputType="textCapSentences"
             android:hint="@string/status_activity_editText"
             android:ems="10"
             android:id="@+id/etCreateStatus" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="4dp"/>
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="4dp"
+            app:layout_constraintHorizontal_bias="1.0" android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/activity_status_iw_image"/>
     <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" app:srcCompat="@android:drawable/btn_dialog"
+            android:layout_width="0dp"
+            android:layout_height="0dp" app:srcCompat="@android:drawable/btn_dialog"
             android:id="@+id/activity_status_iw_image"
-            app:layout_constraintBottom_toTopOf="@+id/etCreateStatus" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="160dp" android:layout_marginLeft="156dp"
-            android:layout_marginStart="156dp" app:layout_constraintVertical_bias="0.0"
-            app:layout_constraintEnd_toStartOf="@+id/etCreateStatus" android:layout_marginEnd="28dp"
-            android:layout_marginRight="28dp" app:layout_constraintHorizontal_bias="0.0"/>
+            android:layout_marginTop="2dp"
+            app:layout_constraintTop_toBottomOf="@+id/etCreateStatus" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" android:layout_marginBottom="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

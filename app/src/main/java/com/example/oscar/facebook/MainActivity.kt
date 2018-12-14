@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     private val hashMapStatusTexts = LinkedHashMap<String,StatusComment>()
     private var camera: Camera? = null
 
+
     private val tabIcons = intArrayOf(
         R.drawable.ic_outline_featured_play_list_24px,
         R.drawable.ic_outline_people_24px,
@@ -216,47 +217,29 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        val SHOW_IMAGE_GALLERY = 0
 
-        /*
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
-            val extras = data?.extras
+        if(resultCode == Activity.RESULT_OK && data != null){
+            if(requestCode == SHOW_IMAGE_GALLERY ){
+                val selectedPhotoUri = data.data
+                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
 
-            val imagebitmap = extras?.get("data") as Bitmap
+                val bs = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, bs)
 
-            iwP.setImageBitmap(imagebitmap)
-        }
-        */
+                val intent = Intent(this,StatusActivity::class.java)
+                intent.putExtra("bitmap",bs.toByteArray())
+                startActivity(intent)
+            }
 
-        if(requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
-            val selectedPhotoUri = data.data
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+            if (requestCode == 1000) {
+                if (resultCode == Activity.RESULT_OK) {
+                    val i = Intent(Intent.ACTION_VIEW)
 
-
-            val bs = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 25, bs)
-
-            val intent = Intent(this,StatusActivity::class.java)
-            intent.putExtra("bitmap",bs.toByteArray())
-            startActivity(intent)
-
-            /*
-
-
-
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
-            val bitmapDrawable = BitmapDrawable(bitmap)
-            iwP.setImageDrawable(bitmapDrawable)
-*/
-        }
-
-
-        if (requestCode === 1000) {
-            if (resultCode === Activity.RESULT_OK) {
-                val i = Intent(Intent.ACTION_VIEW)
-
-                i.setDataAndType(Uri.fromFile(output), "image/jpeg")
-                startActivity(i)
-                finish()
+                    i.setDataAndType(Uri.fromFile(output), "image/jpeg")
+                    startActivity(i)
+                    finish()
+                }
             }
         }
     }
