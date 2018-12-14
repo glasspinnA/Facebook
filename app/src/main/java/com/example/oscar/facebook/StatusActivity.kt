@@ -1,5 +1,8 @@
 package com.example.oscar.facebook
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
@@ -10,6 +13,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_status.*
+import android.graphics.BitmapFactory
+
+
 
 
 class StatusActivity : AppCompatActivity() {
@@ -24,6 +30,17 @@ class StatusActivity : AppCompatActivity() {
         currentUser = intent.getParcelableExtra<User>(FeedFragment.USER_KEY)
         supportActionBar?.title = "Create a post"
 
+        retriveImageForPost()
+    }
+
+    private fun retriveImageForPost(){
+        if(intent.hasExtra("bitmap")){
+            val b = BitmapFactory.decodeByteArray(intent.getByteArrayExtra("bitmap"),
+                0, intent.getByteArrayExtra("bitmap").size
+            )
+            val bitmapDrawable = BitmapDrawable(b)
+            activity_status_iw_image.setImageDrawable(bitmapDrawable)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

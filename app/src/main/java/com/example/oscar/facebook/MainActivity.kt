@@ -36,10 +36,12 @@ import java.text.SimpleDateFormat
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
+import android.graphics.drawable.BitmapDrawable
 import android.os.StrictMode
 import android.support.v4.app.ActivityCompat.requestPermissions
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
+import java.io.ByteArrayOutputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -224,6 +226,29 @@ class MainActivity : AppCompatActivity() {
             iwP.setImageBitmap(imagebitmap)
         }
         */
+
+        if(requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
+            val selectedPhotoUri = data.data
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+
+
+            val bs = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 25, bs)
+
+            val intent = Intent(this,StatusActivity::class.java)
+            intent.putExtra("bitmap",bs.toByteArray())
+            startActivity(intent)
+
+            /*
+
+
+
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+            val bitmapDrawable = BitmapDrawable(bitmap)
+            iwP.setImageDrawable(bitmapDrawable)
+*/
+        }
+
 
         if (requestCode === 1000) {
             if (resultCode === Activity.RESULT_OK) {

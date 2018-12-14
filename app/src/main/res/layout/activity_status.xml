@@ -21,4 +21,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="4dp"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" app:srcCompat="@android:drawable/btn_dialog"
+            android:id="@+id/activity_status_iw_image"
+            app:layout_constraintBottom_toTopOf="@+id/etCreateStatus" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="160dp" android:layout_marginLeft="156dp"
+            android:layout_marginStart="156dp" app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintEnd_toStartOf="@+id/etCreateStatus" android:layout_marginEnd="28dp"
+            android:layout_marginRight="28dp" app:layout_constraintHorizontal_bias="0.0"/>
+
 </android.support.constraint.ConstraintLayout>
