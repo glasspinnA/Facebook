@@ -19,20 +19,21 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
-
 class StatusActivity : AppCompatActivity() {
     private val TAG = "StatusActivity"
-    private var currentUser: User? = null
+    private var currentLogInUser: User? = null
     private var imagePath: Uri? = null
-    private var  stringImage: String? = null
+    private var  imagePathString: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_status)
-        currentUser = intent.getParcelableExtra<User>(FeedFragment.USER_KEY)
-        supportActionBar?.title = "Create a post"
 
-        Log.d(TAG,currentUser.toString())
+        //currentUser = intent.getParcelableExtra<User>(FeedFragment.USER_KEY)
+
+        fetchCurrentUser()
+
+        supportActionBar?.title = "Create a post"
 
         retriveImageForPost()
     }
@@ -43,8 +44,7 @@ class StatusActivity : AppCompatActivity() {
                 0, intent.getByteArrayExtra("bitmap").size
             )
             val bitmapDrawable = BitmapDrawable(b)
-            //activity_status_iw_image.setImageDrawable(bitmapDrawable)
-
+            activity_status_iw_image.setImageDrawable(bitmapDrawable)
             val path = Images.Media.insertImage(this.getContentResolver(), b, "Title", null)
             imagePath = Uri.parse(path)
         }
@@ -54,11 +54,9 @@ class StatusActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item?.getItemId()
         if(id == R.id.btnCreatePost){
-
             if(imagePath == null){
                 createPost()
             }else{
-                Log.d(TAG,"GOES THIS WAY")
                 uploadProfilePicToStorage()
             }
         }
@@ -68,21 +66,27 @@ class StatusActivity : AppCompatActivity() {
     private fun createPost() {
         val ref = FirebaseDatabase.getInstance().getReference("status").push()
 
-        val userId = currentUser?.userId
-        val userPhoto = currentUser?.profilePhotoUrl
-        val userName = currentUser?.firstname
+        val userId = currentLogInUser?.userId
+        val userPhoto = currentLogInUser?.profilePhotoUrl
+        val userName = currentLogInUser?.firstname
         val text = etCreateStatus.text.toString()
         val timestamp = System.currentTimeMillis()
         val nbrLikes = -1
         val nbrCommets = -1
 
-        if(stringImage != null){
+        if(imagePathString != null){
             Log.d(TAG,"String Image is not Null")
-            val statusTextObject = StatusText(ref.key!!,userId!!,userPhoto!!,userName!!,text,timestamp, nbrLikes, nbrCommets, "-0-")
+            val statusTextObject = StatusText(ref.key!!,userId!!,userPhoto!!,userName!!,text,timestamp, nbrLikes, nbrCommets, imagePathString!!)
             ref.setValue(statusTextObject)
-        }else if(stringImage == null){
+                .addOnSuccessListener {
+                    Log.d(TAG, "Finally saved user to DB")
+                }
+
+                .addOnFailureListener {
+                    Log.d(TAG, "Didn't saved user to DB $it")
+                }
+        }else if(imagePathString == null){
             val statusTextObject = StatusText(ref.key!!,userId!!,userPhoto!!,userName!!,text,timestamp, nbrLikes, nbrCommets, "-0-")
-            Log.d(TAG,"String Image is null")
             ref.setValue(statusTextObject)
         }
     }
@@ -102,7 +106,8 @@ class StatusActivity : AppCompatActivity() {
 
                 ref.downloadUrl.addOnSuccessListener {
                     Log.d(TAG, "File located $it")
-                    fetchCurrentUser(it.toString())
+                    imagePathString = it.toString()
+                    createPost()
                 }
             }
             .addOnFailureListener {
@@ -110,49 +115,17 @@ class StatusActivity : AppCompatActivity() {
             }
     }
 
-    private fun fetchCurrentUser(toString: String) {
+    private fun fetchCurrentUser() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
         ref.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
-                val currentLogInUser = p0.getValue(User::class.java)
-                testCreatePost(toString,currentLogInUser)
+                currentLogInUser = p0.getValue(User::class.java)
             }
         })
     }
-
-    private fun testCreatePost(stringImage: String, currentLogInUser: User?) {
-
-
-        Log.d(TAG,currentLogInUser.toString())
-
-
-        val ref = FirebaseDatabase.getInstance().getReference("status").push()
-
-        val userId = currentLogInUser?.userId
-        val userPhoto = currentLogInUser?.profilePhotoUrl
-        val userName = currentLogInUser?.firstname
-        val text = etCreateStatus.text.toString()
-        val timestamp = System.currentTimeMillis()
-        val nbrLikes = -1
-        val nbrCommets = -1
-
-
-        val statusTextObject = StatusText(ref.key!!,userId!!,userPhoto!!,userName!!,text,timestamp, nbrLikes, nbrCommets, stringImage)
-            ref.setValue(statusTextObject)
-                .addOnSuccessListener {
-                    Log.d(TAG, "Finally saved user to DB")
-                }
-
-                .addOnFailureListener {
-                    Log.d(TAG, "Didn't saved user to DB $it")
-                }
-
-
-    }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
