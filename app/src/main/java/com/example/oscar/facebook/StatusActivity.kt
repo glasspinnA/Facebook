@@ -76,7 +76,6 @@ class StatusActivity : AppCompatActivity() {
         val nbrLikes = -1
         val nbrCommets = -1
 
-
         if(stringImage != null){
             Log.d(TAG,"String Image is not Null")
             val statusTextObject = StatusText(ref.key!!,userId!!,userPhoto!!,userName!!,text,timestamp, nbrLikes, nbrCommets, "-0-")
@@ -119,7 +118,6 @@ class StatusActivity : AppCompatActivity() {
 
             override fun onDataChange(p0: DataSnapshot) {
                 val currentLogInUser = p0.getValue(User::class.java)
-                //Log.d("MainActivity", "Current user ${MainActivity.currentLogInUser?.profilePhotoUrl}" )
                 testCreatePost(toString,currentLogInUser)
             }
         })

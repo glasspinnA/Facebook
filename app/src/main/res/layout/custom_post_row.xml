@@ -9,6 +9,7 @@
 
 >
 
+
     <TextView
             android:id="@+id/tvProfileName"
             android:textColor="@android:color/black"
@@ -55,6 +56,11 @@
             android:layout_marginRight="16dp" android:layout_marginStart="16dp"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="16dp"/>
 
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" app:srcCompat="@android:drawable/btn_dialog"
+            android:id="@+id/custom_post_iw_picture" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
     <TextView
             android:text="TextView"
             android:textColor="@android:color/black"

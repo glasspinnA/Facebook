@@ -41,6 +41,7 @@ import android.os.StrictMode
 import android.support.v4.app.ActivityCompat.requestPermissions
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
+import kotlinx.android.synthetic.main.activity_status.*
 import java.io.ByteArrayOutputStream
 
 
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         bottom_sheet_rv.adapter = groupAdapter
 
+
         initTabLayout()
         initCameraFunctions()
 
@@ -97,7 +99,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
+
+
+        /**
      * Method for checking camera permissions
      */
     private fun checkPermissions(){

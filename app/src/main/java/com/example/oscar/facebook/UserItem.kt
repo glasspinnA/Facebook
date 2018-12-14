@@ -30,6 +30,7 @@ class UserItem(val context: Context, val statusTextObj: StatusText): Item<ViewHo
             Picasso.get().load(picUrl).into(targetImageView)
             Log.d(TAG,"PostID: " + statusTextObj.postId)
 
+            Picasso.get().load(statusTextObj.statusPhoto).into(holder.custom_post_iw_picture)
 
             holder.custom_post_btn_like.setOnClickListener {
                 val nbrLikes = (statusTextObj.nbrLikes + 1)
