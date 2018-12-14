@@ -18,13 +18,13 @@
             android:layout_height="match_parent">
 
         <Button
-                android:text="Camera"
+                android:text="Gallery"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/btn_bottom_sheet_camera_gallery"
                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
         <Button
-                android:text="Gallery"
+                android:text="Camera"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/btn_bottom_sheet_camera_camera"
                 app:layout_constraintStart_toStartOf="parent"

@@ -1,5 +1,7 @@
 package com.example.oscar.facebook
 
+import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +20,26 @@ import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.bottom_sheet_camera_option.*
 import java.util.*
+import android.R.attr.data
+import android.graphics.Bitmap
+import android.R.attr.data
+import android.R.attr.bitmap
+import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
+import java.io.File.separator
+import java.nio.file.Files.exists
+import android.os.Environment.DIRECTORY_PICTURES
+import android.os.Environment.getExternalStoragePublicDirectory
+import java.io.File
+import java.text.SimpleDateFormat
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.support.v4.app.ActivityCompat
+import android.content.pm.PackageManager
+import android.os.StrictMode
+import android.support.v4.app.ActivityCompat.requestPermissions
+import android.support.v4.content.ContextCompat
+import android.support.v4.content.FileProvider
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     private val groupAdapter = GroupAdapter<ViewHolder>()
     private val hashMapStatusTexts = LinkedHashMap<String,StatusComment>()
+    private var camera: Camera? = null
 
     private val tabIcons = intArrayOf(
         R.drawable.ic_outline_featured_play_list_24px,
@@ -48,22 +71,52 @@ class MainActivity : AppCompatActivity() {
         val fragmentAdapter = PagerAdapter(supportFragmentManager)
         viewpager_main.adapter = fragmentAdapter
 
+        bottom_sheet_rv.adapter = groupAdapter
 
+        initTabLayout()
+        initCameraFunctions()
+
+        startCameraPanel()
+
+        logOutUser()
+        fetchCurrentUser()
+        verifyUser()
+
+        checkPermissions()
+    }
+
+    /**
+     * Method that contains button listener to start camera panel
+     */
+    private fun startCameraPanel(){
         btnPhoto.setOnClickListener{
             showCameraPanel()
         }
-
-        initTabLayout()
-
-        bottom_sheet_rv.adapter = groupAdapter
-
-
-        logOutUser()
-
-        fetchCurrentUser()
-        verifyUser()
     }
 
+    /**
+     * Method for checking camera permissions
+     */
+    private fun checkPermissions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                0
+            )
+        }
+    }
+
+    /**
+     * Method that inits the camera class
+     */
+    private fun initCameraFunctions() {
+        camera = Camera(this)
+    }
+
+    /**
+     * Method that inits the tab layout
+     */
     private fun initTabLayout() {
         tabs_main.setupWithViewPager(viewpager_main)
         tabs_main.getTabAt(0)?.setIcon(tabIcons[0])
@@ -83,12 +136,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     *  Method for fetching the current user logged in, in the app
+     */
     private fun fetchCurrentUser() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
         ref.addListenerForSingleValueEvent(object: ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-            }
+            override fun onCancelled(p0: DatabaseError) {}
+
             override fun onDataChange(p0: DataSnapshot) {
                 currentLogInUser = p0.getValue(User::class.java)
                 Log.d("MainActivity", "Current user ${currentLogInUser?.profilePhotoUrl}" )
@@ -135,14 +191,88 @@ class MainActivity : AppCompatActivity() {
      */
     private fun cameraListeners(){
         btn_bottom_sheet_camera_camera.setOnClickListener{
-            dispatchTakePictureIntent(this)
+            //dispatchTakePictureIntent(this)
+           takePicture()
         }
 
         btn_bottom_sheet_camera_gallery.setOnClickListener{
-            showImageGallery(this)
+            //showImageGallery()
         }
     }
 
+/*
+    fun takePicture(){
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        if(intent.resolveActivity(packageManager) != null){
+            startActivityForResult(intent,REQUEST_IMAGE_CAPTURE)
+        }
+    }
+    */
+
+    private var output: File? = null
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        /*
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
+            val extras = data?.extras
+
+            val imagebitmap = extras?.get("data") as Bitmap
+
+            iwP.setImageBitmap(imagebitmap)
+        }
+        */
+
+        if (requestCode === 1000) {
+            if (resultCode === Activity.RESULT_OK) {
+                val i = Intent(Intent.ACTION_VIEW)
+
+                i.setDataAndType(Uri.fromFile(output), "image/jpeg")
+                startActivity(i)
+                finish()
+            }
+        }
+    }
+
+    private fun takePicture() {
+
+        val builder = StrictMode.VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build());
+
+        val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+
+        Log.d("TAG",dir.toString())
+
+        output = File(dir, "CameraContentDemo.jpeg")
+
+        i.putExtra(MediaStore.EXTRA_OUTPUT, output)
+
+        startActivityForResult(i, 1000)
+    }
+
+    private fun getOutputMediaFile(): File? {
+        val mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Test")
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null
+            }
+        }
+
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        return File(
+            mediaStorageDir.getPath() + File.separator +
+            "IMG_" + timeStamp + ".jpg"
+        )
+}
+
+
+    /**
+     * Method for showing comment panel
+     */
     fun showCommentPanel() {
         clearList()
         val llBottomSheet = findViewById<LinearLayout>(R.id.bottom_sheet)
@@ -169,7 +299,7 @@ class MainActivity : AppCompatActivity() {
                 val response = p0.getValue(StatusComment::class.java)?: return
                 Log.d("MainActivity", "Key is: " + p0.key)
                 hashMapStatusTexts[p0.key!!] = response
-                updateRView()
+                //updateRView()
                 Log.d("MainActivity", "Comment is : ${response.commentText}")
             }
             override fun onChildRemoved(p0: DataSnapshot) {}
@@ -215,9 +345,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Method for clearing list
+     */
     private fun clearList(){
         groupAdapter.clear()
         hashMapStatusTexts.clear()
+    }
+
+    /**
+     * Passage method from headerItem to camera class
+     */
+    fun createImagePostPassage(){
+        camera?.showImageGallery()
     }
 }
 

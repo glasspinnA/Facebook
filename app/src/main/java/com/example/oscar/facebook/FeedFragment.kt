@@ -31,7 +31,6 @@ import kotlin.collections.LinkedHashMap
  * A simple [Fragment] subclass.
  */
 class FeedFragment : Fragment() {
-
     private var root: View? = null   // create a global variable which will hold your layout
     private val groupAdapter = GroupAdapter<ViewHolder>()
     private val hashMapStatusTexts = LinkedHashMap<String,StatusText>()
@@ -93,14 +92,13 @@ class FeedFragment : Fragment() {
         if(testu == null){
             fetchCurrentUser()
             //Log.d("Feed", testu!!.userId)
-            groupAdapter.add(HeaderItem(testu!!))
+            groupAdapter.add(HeaderItem(testu!!, activity as MainActivity))
         }else{
-            groupAdapter.add(HeaderItem(testu!!))
+            groupAdapter.add(HeaderItem(testu!!, activity as MainActivity))
         }
 
         for(i in hashMapStatusTexts.values.reversed()){
             groupAdapter.add(UserItem(context!!,i))
         }
-
     }
 }

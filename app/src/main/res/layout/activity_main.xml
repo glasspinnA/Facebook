@@ -29,6 +29,10 @@
                     android:background="@drawable/ic_round_exit_to_app_24px"
             />
         </android.support.v7.widget.Toolbar>
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" app:srcCompat="@android:drawable/btn_dialog"
+                android:id="@+id/iwP"/>
         <Button
                 android:text="Button"
                 android:layout_width="match_parent"
